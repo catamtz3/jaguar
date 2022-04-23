@@ -60,6 +60,8 @@ public class MoveToFrontList<K, V> extends DeletelessDictionary<K, V> {
                 return returnType;
             }
         }
+        this.front.value = value;
+        return temp;
     }
 
     @Override
