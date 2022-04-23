@@ -1,13 +1,16 @@
 package datastructures.worklists;
 
 import cse332.exceptions.NotYetImplementedException;
+import cse332.interfaces.worklists.FIFOWorkList;
 import cse332.interfaces.worklists.FixedSizeFIFOWorkList;
 
 /**
  * See cse332/interfaces/worklists/FixedSizeFIFOWorkList.java
  * for method specifications.
  */
-public class CircularArrayFIFOQueue<E> extends FixedSizeFIFOWorkList<E> {
+public class CircularArrayFIFOQueue<E extends Comparable<E>> extends FixedSizeFIFOWorkList<E> {
+
+    private E[] arr;
     public CircularArrayFIFOQueue(int capacity) {
         super(capacity);
         throw new NotYetImplementedException();
@@ -51,7 +54,20 @@ public class CircularArrayFIFOQueue<E> extends FixedSizeFIFOWorkList<E> {
     @Override
     public int compareTo(FixedSizeFIFOWorkList<E> other) {
         // You will implement this method in project 2. Leave this method unchanged for project 1.
-        throw new NotYetImplementedException();
+        int compare = Math.min(this.size(), other.size());
+        for(int i = 0; i < compare; i++){
+            if(this.peek(i).compareTo(other.peek(i)) != 0){
+                return this.peek(i).compareTo(other.peek(i));
+            }
+        }
+
+        if(this.size() > other.size()){
+            return 1;
+        }
+        if(this.size() < other.size()){
+            return -1;
+        }
+        return 0;
     }
 
     @Override
@@ -64,17 +80,28 @@ public class CircularArrayFIFOQueue<E> extends FixedSizeFIFOWorkList<E> {
             return false;
         } else {
             // Uncomment the line below for p2 when you implement equals
-            // FixedSizeFIFOWorkList<E> other = (FixedSizeFIFOWorkList<E>) obj;
-
-            // Your code goes here
-
-            throw new NotYetImplementedException();
+            FixedSizeFIFOWorkList<E> other = (FixedSizeFIFOWorkList<E>) obj;
+            if(this.size() != other.size())
+                return false;
+            else {
+                for (int i = 0; i < this.size(); i++){
+                    if(this.peek(i) != other.peek(i)){
+                        return false;
+                    }
+                }
+                return true;
+            }
         }
     }
 
     @Override
     public int hashCode() {
         // You will implement this method in project 2. Leave this method unchanged for project 1.
-        throw new NotYetImplementedException();
+        int prime = 7;
+        int result = 1;
+        for (int i = 0; i < this.arr.length; i++){
+            result = result * prime + ((this.arr[i] == null) ? 0 : this.arr[i].hashCode());
+        }
+        return result;
     }
 }
