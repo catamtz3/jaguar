@@ -43,18 +43,22 @@ public class MoveToFrontList<K, V> extends DeletelessDictionary<K, V> {
         }
         V temp = this.find(key);
         Node node = new Node(key,value);
-        if(this.size== 0){
-            this.front = node;
-            this.back = node;
-            this.size++;
-            return value;
-        } else {
-            temp = (V)this.front.value;
-            this.front.prev = node;
-            node.next = this.front;
-            this.front = node;
-            this.size++;
-            return temp;
+        if(temp == null) {
+            Node newNode = new Node(key, value);
+            V returnType = null;
+            if (this.size == 0) {
+                this.front = node;
+                this.back = node;
+                this.size++;
+                return value;
+            } else {
+                returnType = (V) this.front.value;
+                this.front.prev = node;
+                node.next = this.front;
+                this.front = node;
+                this.size++;
+                return returnType;
+            }
         }
     }
 
@@ -67,17 +71,17 @@ public class MoveToFrontList<K, V> extends DeletelessDictionary<K, V> {
         while(curr != null){
             if (curr.key.equals(key) && curr.prev == null){
                 return (V) curr.value;
-            } else if (curr.key.equals(key) && curr.prev != null && curr.next != null){
-                curr.prev.next = curr.next;
-                curr.next.prev = curr.prev;
+            } else if (curr.key.equals(key) && curr.next == null){
+                curr.prev.next = null;
                 this.back = this.back.prev;
                 curr.next = this.front;
                 curr.prev = null;
                 this.front.prev = curr;
                 this.front = curr;
                 return (V)curr.value;
-            } else if (curr.key.equals(key) && curr.next == null){
-                curr.prev.next = null;
+            } else if (curr.key.equals(key) && curr.prev != null && curr.next != null){
+                curr.prev.next = curr.next;
+                curr.next.prev = curr.prev;
                 this.back = this.back.prev;
                 curr.next = this.front;
                 curr.prev = null;
@@ -93,6 +97,7 @@ public class MoveToFrontList<K, V> extends DeletelessDictionary<K, V> {
 
     @Override
     public Iterator<Item<K, V>> iterator() {
-        throw new IllegalArgumentException();
+        Node curr = MoveToFrontList.this.front;
+        return (Iterator<Item<K, V>>) curr;
     }
 }
