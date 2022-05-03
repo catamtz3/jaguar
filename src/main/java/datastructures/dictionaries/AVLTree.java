@@ -27,5 +27,90 @@ import cse332.datastructures.trees.BinarySearchTree;
  */
 
 public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTree<K, V> {
-    // TODO: Implement me!
+    private class AVLNode extends BSTNode{
+        int height;
+        AVLNode left;
+        AVLNode right;
+        public AVLNode(K key, V value) {
+            super(key, value);
+            this.height = 0;
+        }
+    }
+    public AVLTree(){
+        super();
+        this.size = size();
+    }
+
+    public V insert(K key, V val){
+        if(key == null || val == null){
+            throw new IllegalArgumentException();
+        }
+        V returnVal = this.find(key);
+        AVLNode node = new AVLNode(key,val);
+        if(returnVal == null){
+            this.size++;
+            returnVal = val;
+        }
+        this.root = createTree(node, (AVLNode)this.root);
+        return returnVal;
+    }
+
+    public AVLNode createTree(AVLNode node, AVLNode root){
+        if (root == null){
+            return node;
+        }
+        if(root.key.compareTo(node.key) < 0){
+            root.right = createTree(node, root.right);
+        } else if(root.key.compareTo(node.key) > 0){
+            root.left = createTree(node, root.left);
+        } else{
+            root.value = node.value;
+        }
+        return rebalance(root);
+    }
+
+    public int height(AVLNode h){
+        return h != null ? h.height: -1;
+    }
+
+    public AVLNode rotateRight(AVLNode node){
+        AVLNode left = node.left;
+        node.left = left.right;
+        left.right = node;
+        node.height = Math.max(height(node.left), height(node.right)) + 1;
+        node.left.height = Math.max(height(left.left), height(left.right)) + 1;
+        return left;
+    }
+
+    public AVLNode rotateLeft(AVLNode node){
+        AVLNode right = node.right;
+        node.right = right.left;
+        right.left = node;
+        node.height = Math.max(height(node.left), height(node.right)) + 1;
+        right.height = Math.max(height(right.left), height(right.right)) + 1;
+        return right;
+    }
+
+    private AVLNode rebalance(AVLNode node){
+        if(node == null){
+            return node;
+        }
+        if((height(node.right) - height(node.left) < -1)){
+            if ((height(node.left.right) - height(node.left.left)) <= 0){
+                node = rotateRight(node);
+            } else{
+                node.left = rotateLeft(node.left);
+                node = rotateRight(node);
+            }
+        } else if ((height(node.right) - height(node.left)) > 1){
+            if((height(node.right.right) - height(node.right.left)) >= 0){
+                node = rotateLeft(node);
+            } else {
+                node.right = rotateRight(node.right);
+                node = rotateLeft(node);
+            }
+        }
+        node.height = Math.max(height(node.left), height(node.right)) + 1;
+        return node;
+    }
 }

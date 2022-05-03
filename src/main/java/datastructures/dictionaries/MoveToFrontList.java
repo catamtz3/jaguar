@@ -99,7 +99,38 @@ public class MoveToFrontList<K, V> extends DeletelessDictionary<K, V> {
 
     @Override
     public Iterator<Item<K, V>> iterator() {
-        Node curr = MoveToFrontList.this.front;
-        return (Iterator<Item<K, V>>) curr;
+
+        return new ListIterator();
+
+    }
+
+    private class ListIterator implements Iterator<Item<K, V>> {
+
+        Node current;
+
+        public ListIterator() {
+
+            current = MoveToFrontList.this.front;
+        }
+
+        @Override
+        public boolean hasNext() {
+
+            return current != null;
+        }
+
+        public Item<K, V> next() {
+
+            if (hasNext()) {
+                Item<K, V> item = new Item<>((K)this.current.key,(V)this.current.value);
+                this.current = this.current.next;
+                return item;
+
+            }else {
+                return null;
+            }
+
+        }
     }
 }
+

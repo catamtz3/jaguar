@@ -20,7 +20,7 @@ public class MinFourHeapComparable<E extends Comparable<E>> extends PriorityWork
     public MinFourHeapComparable() {
         currentSize = 0;
         defaultSize = 100;
-        data = (E[]) new Object [defaultSize];
+        data = (E[]) new Comparable[defaultSize];
     }
 
     @Override
@@ -41,6 +41,9 @@ public class MinFourHeapComparable<E extends Comparable<E>> extends PriorityWork
 
     @Override
     public E peek() {
+        if (currentSize == 0) {
+            throw new NoSuchElementException();
+        }
         return data[0];
     }
 

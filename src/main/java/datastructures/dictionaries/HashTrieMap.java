@@ -53,7 +53,7 @@ public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> exten
 
     @Override
     public void delete(K key) {
-        throw new NotYetImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
