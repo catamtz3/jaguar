@@ -12,9 +12,13 @@ import java.util.Comparator;
 public class MinFourHeap<E> extends PriorityWorkList<E> {
     /* Do not change the name of this field; the tests rely on it to work correctly. */
     private E[] data;
+    private int defaultSize;
+    private int currentSize;
 
     public MinFourHeap(Comparator<E> c) {
-        throw new NotYetImplementedException();
+        currentSize = 0;
+        defaultSize = 100;
+        data = (E[]) new Object [defaultSize];
     }
 
     @Override
