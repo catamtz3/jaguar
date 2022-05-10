@@ -81,7 +81,7 @@ public class MinFourHeapComparable<E extends Comparable<E>> extends PriorityWork
             }
             if (data[minChild].compareTo(data[parentIndex]) < 0) {
                 swapTwoIndices(minChild, parentIndex);
-                parentIndex = childIndex;
+                parentIndex = minChild;
                 childIndex = (parentIndex * 4) + 1;
             } else {
                 return;
