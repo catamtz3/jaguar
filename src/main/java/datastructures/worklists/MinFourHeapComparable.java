@@ -1,11 +1,8 @@
 package datastructures.worklists;
 
-import cse332.datastructures.trees.BinarySearchTree;
 import cse332.exceptions.NotYetImplementedException;
 import cse332.interfaces.worklists.PriorityWorkList;
-import cse332.interfaces.worklists.WorkList;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
@@ -23,9 +20,10 @@ public class MinFourHeapComparable<E extends Comparable<E>> extends PriorityWork
     public MinFourHeapComparable() {
         currentSize = 0;
         defaultSize = 100;
-        data = (E[])new Comparable[defaultSize];
+        data = (E[]) new Comparable[defaultSize];
     }
 
+    @Override
     public boolean hasWork() {
         return currentSize > 0;
     }
@@ -43,7 +41,7 @@ public class MinFourHeapComparable<E extends Comparable<E>> extends PriorityWork
 
     @Override
     public E peek() {
-        if(currentSize == 0){
+        if (currentSize == 0) {
             throw new NoSuchElementException();
         }
         return data[0];
@@ -83,7 +81,7 @@ public class MinFourHeapComparable<E extends Comparable<E>> extends PriorityWork
             }
             if (data[minChild].compareTo(data[parentIndex]) < 0) {
                 swapTwoIndices(minChild, parentIndex);
-                parentIndex = childIndex;
+                parentIndex = minChild;
                 childIndex = (parentIndex * 4) + 1;
             } else {
                 return;
@@ -111,4 +109,5 @@ public class MinFourHeapComparable<E extends Comparable<E>> extends PriorityWork
         }
     }
 }
+
 

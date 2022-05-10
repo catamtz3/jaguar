@@ -10,6 +10,13 @@ public class QuickSort {
     }
 
     public static <E> void sort(E[] array, Comparator<E> comparator) {
+//        if (comparator.compare(array[0], array[array.length]) < 0){
+//            int i = array.length;
+//            E pivot = array[i];
+//            int first = array[0] - 1;
+//            for (int j = data[0])
+//        }
+//    }
         throw new NotYetImplementedException();
     }
 }
