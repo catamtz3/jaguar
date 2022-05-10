@@ -113,5 +113,4 @@ public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTre
         node.height = Math.max(height(node.left), height(node.right)) + 1;
         return node;
     }
-
 }
