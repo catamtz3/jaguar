@@ -10,6 +10,36 @@ public class QuickSort {
     }
 
     public static <E> void sort(E[] array, Comparator<E> comparator) {
-        throw new NotYetImplementedException();
+        quicksort(array,0,array.length-1,comparator);
     }
+    public static <E> void quicksort( E [] arr, int lo , int hi,Comparator<E> comparator) {
+
+        if(lo<hi) {
+            int partitionIndex = insertionSort(arr,lo,hi,comparator);
+
+            quicksort(arr,lo,partitionIndex-1,comparator);
+            quicksort(arr,partitionIndex+1,hi,comparator);
+        }
+    }
+    public static <E> int insertionSort(E [] arr,int lo,int hi,Comparator<E> comparator) {
+        E pivot = arr[hi];
+        int i = lo-1;
+        for (int j = lo; j < hi; j ++) {
+            if (comparator.compare(pivot, arr[j]) >=0 ) {
+                i++;
+
+                E swaptemp = arr[i];
+
+                arr[i] = arr[j];
+                arr[j] = swaptemp;
+            }
+        }
+
+        E swapTemp = arr[i+1];
+        arr[i+1] = arr[hi];
+        arr[hi] = swapTemp;
+
+        return i+1;
+    }
+
 }
