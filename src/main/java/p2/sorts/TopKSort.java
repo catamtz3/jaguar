@@ -15,16 +15,13 @@ public class TopKSort {
      * Behaviour is undefined when k > array.length
      */
     public static <E> void sort(E[] array, int k, Comparator<E> comparator) {
-        if (k > array.length)
-            k = array.length;
-        PriorityWorkList<E> pq = new MinFourHeap<>(comparator);
-        for (int i = 0; i < k; i++)
-            pq.add(array[i]);
-        for (int j = k; j < array.length; j++) {
-            if (comparator.compare(pq.next(), array[j]) < 0) {
-                pq.next();
-                pq.add(array[j]);
-            }
+        if (array.length < k) {
+            HeapSort.sort(array, comparator);
+            return;
+        }
+        QuickSort.sort(array, comparator);
+        for (int i = 0; i < k; i++) {
+            array[i] = array[array.length - k + i];
         }
     }
 }

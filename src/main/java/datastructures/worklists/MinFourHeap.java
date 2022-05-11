@@ -100,7 +100,7 @@ public class MinFourHeap<E> extends PriorityWorkList<E> {
                     minChild = currentChild;
                 }
             }
-            if (comparator.compare(data[minChild], data[parentIndex]) > 0) {
+            if (comparator.compare(data[minChild], data[parentIndex]) < 0) {
                 swapTwoIndices(minChild, parentIndex);
                 parentIndex = minChild;
                 childIndex = (parentIndex * 4) + 1;

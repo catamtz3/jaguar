@@ -74,21 +74,21 @@ public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTre
     }
 
     public AVLNode rotateRight(AVLNode node){
-        AVLNode left = node.left;
-        node.left = left.right;
-        left.right = node;
-        node.height = Math.max(height(node.left), height(node.right)) + 1;
-        node.left.height = Math.max(height(left.left), height(left.right)) + 1;
-        return left;
+        AVLNode right = node.right.right;
+        node.right.right = right.left;
+        right.left = node;
+        node.height = Math.max(height(node.left.left), height(node.left.right)) + 1;
+        right.height = Math.max(height(right.right), height(node)) + 1;
+        return right;
     }
 
     public AVLNode rotateLeft(AVLNode node){
-        AVLNode right = node.right;
-        node.right = right.left;
-        right.left = node;
+        AVLNode left = node.left;
+        node.left = left.right;
+        node.right = left;
         node.height = Math.max(height(node.left), height(node.right)) + 1;
-        right.height = Math.max(height(right.left), height(right.right)) + 1;
-        return right;
+        left.height = Math.max(height(left.left), height(node)) + 1;
+        return left;
     }
 
     private AVLNode rebalance(AVLNode node){
