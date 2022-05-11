@@ -24,20 +24,21 @@ public class AutocompleteTrie extends HashTrieMap<Character, AlphabeticString, I
             }
         }
 
-        StringBuilder result = new StringBuilder(key);
+        String result = key;
 
         while (current.pointers.size() == 1) {
             if (current.value != null) {
                 return null;
             }
-
-            result += current.pointers.iterator().next();
-            current = current.pointers.iterator().next();
+            Iterator iter = current.pointers.iterator();
+            Item<Character, HashTrieNode> value = (Item<Character, HashTrieMap<Character, AlphabeticString, Integer>.HashTrieNode>) iter.next();
+            result = result + value.key;
+            current = value.value;
         }
 
         if (current.pointers.size() != 0) {
-            return result.toString();
+            return result;
         }
-        return result.toString();
+        return result;
     }
 }

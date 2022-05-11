@@ -3,8 +3,10 @@ package datastructures.dictionaries;
 import cse332.datastructures.containers.Item;
 import cse332.interfaces.trie.TrieMap;
 import cse332.types.BString;
+import datastructures.worklists.ArrayStack;
 
 import java.util.AbstractMap;
+import java.util.Dictionary;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -14,43 +16,36 @@ import java.util.Map.Entry;
  * for method specifications.
  */
 public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> extends TrieMap<A, K, V> {
-    public class HashTrieNode extends TrieNode<ChainingHashTable<A,HashTrieNode>,HashTrieNode> {
+    //public class HashTrieNode extends TrieNode<Dictionary<A, HashTrieNode>, HashTrieNode>{
+    public class HashTrieNode extends TrieNode<ChainingHashTable<A, HashTrieNode>, HashTrieNode>{
         public HashTrieNode() {
             this(null);
         }
 
         public HashTrieNode(V value) {
-            this.pointers = new ChainingHashTable<>(MoveToFrontList::new);
+            this.pointers = new ChainingHashTable<>(() -> new MoveToFrontList<>());
             this.value = value;
+        }
+
+
+        @Override
+        public Iterator<Entry<A, HashTrieMap<A, K, V>.HashTrieNode>> iterator() {
+            ArrayStack<Entry<A, HashTrieNode>> entry = new ArrayStack<>();
+
+            for (Item<A, HashTrieNode> value : this.pointers) {
+                entry.add(new AbstractMap.SimpleEntry(value.key, value.value));
+            }
+            return entry.iterator();
         }
     }
 
-    @Override
-    public Iterator<Entry<A, HashTrieNode> iterator() {
-
-        Iterator<Item<A, HashTrieNode>> chainingHashIterator = pointers.iterator();
-        Iterator<Entry<A, HashTrieNode>> returnIterator = new Iterator<Entry<A, HashTrieNode>>() {
-            @Override
-            public boolean hasNext() {
-                return chainingHashIterator.hasNext();
-            }
-            @Override
-            public Entry<A, HashTrieNode> next() {
-                Item<A, HashTrieNode> returnItem = chainingHashIterator.next();
-                Entry<A, HashTrieNode> returnEntry =  new AbstractMap.SimpleEntry<>(returnItem.key, returnItem.value);
-                return returnEntry;
-            }
-        };
-        return returnIterator;
-    }
-
-    }
 
 
 
     public HashTrieMap(Class<K> KClass) {
         super(KClass);
         this.root = new HashTrieNode();
+        this.size = 0;
     }
 
     @Override
@@ -58,21 +53,31 @@ public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> exten
         if (key == null || value == null) {
             throw new IllegalArgumentException();
         }
-        HashTrieNode curr = (HashTrieNode) this.root;
-        for(A currentKey : key){
-            if(curr.pointers.find(currentKey) != null){
-                curr = curr.pointers.find(currentKey);
-            } else {
-                curr.pointers.insert(currentKey, new HashTrieNode());
-                curr = curr.pointers.find(currentKey);
+        if (this.root == null) {
+            this.root = new HashTrieNode();
+        }
+        V returnValue = null;
+        if (key.isEmpty()) {
+            returnValue = this.root.value;
+            this.root.value = value;
+        } else {
+            HashTrieNode current = (HashTrieMap<A, K, V>.HashTrieNode) this.root;
+            for (A currKey : key) {
+                if (current.pointers.find(currKey) == null) {
+                    current.pointers.insert(currKey, new HashTrieNode());
+                }
+                current = current.pointers.find(currKey);
             }
+            returnValue = current.value;
+            current.value = value;
         }
-        if(curr.value == null){
-            size++;
+        if (returnValue == null) {
+            this.size++;
         }
-        curr.value = value;
-        return curr.value;
+        return returnValue;
     }
+
+
 
     @Override
     public V find(K key) {
@@ -101,15 +106,13 @@ public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> exten
             return false;
         }
         HashTrieNode curr = (HashTrieMap<A,K,V>.HashTrieNode) this.root;
-        boolean result = true;
         for(A character : key){
-            if(curr.pointers.find(character) != null){
-                curr = curr.pointers.find(character);
-            } else {
-                result = false;
+            curr = curr.pointers.find(character);
+            if (curr == null){
+                return false;
             }
         }
-        return result;
+        return true;
     }
 
     @Override

@@ -28,7 +28,6 @@ public class ChainingHashTable<K, V> extends DeletelessDictionary<K, V> {
         for (int i = 0; i < 7; i++){
             array[i] = newChain.get();
         }
-        loadFactor = 0.0;
         startCount = 0;
         totalCount = 0;
         counting = 0.0;
