@@ -29,8 +29,6 @@ import cse332.datastructures.trees.BinarySearchTree;
 public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTree<K, V> {
     private class AVLNode extends BSTNode{
         int height;
-        AVLNode left;
-        AVLNode right;
         public AVLNode(K key, V value) {
             super(key, value);
             this.height = 0;
@@ -60,13 +58,13 @@ public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTre
             return node;
         }
         if(root.key.compareTo(node.key) < 0){
-            root.right = createTree(node, root.right);
+            root.children[1] = createTree(node, (AVLNode)root.children[1]);
         } else if(root.key.compareTo(node.key) > 0){
-            root.left = createTree(node, root.left);
+            root.children[0] = createTree(node, (AVLNode)root.children[0]);
         } else{
             root.value = node.value;
         }
-        return rebalance(root);
+        return balance(root);
     }
 
     public int height(AVLNode h){
@@ -74,43 +72,46 @@ public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTre
     }
 
     public AVLNode rotateRight(AVLNode node){
-        AVLNode right = node.right.right;
-        node.right.right = right.left;
-        right.left = node;
-        node.height = Math.max(height(node.left.left), height(node.left.right)) + 1;
-        right.height = Math.max(height(right.right), height(node)) + 1;
+        AVLNode right = (AVLNode)node.children[0];
+        node.children[0] = right.children[1];
+        right.children[1] = node;
+        node.height = Math.max(height((AVLNode) node.children[0]), height((AVLNode) node.children[1])) + 1;
+        right.height = Math.max(height((AVLNode) right.children[0]), height((AVLNode) right.children[1])) + 1;
         return right;
+
     }
 
     public AVLNode rotateLeft(AVLNode node){
-        AVLNode left = node.left;
-        node.left = left.right;
-        node.right = left;
-        node.height = Math.max(height(node.left), height(node.right)) + 1;
-        left.height = Math.max(height(left.left), height(node)) + 1;
+        AVLNode left = (AVLNode)node.children[1];
+        node.children[1] = left.children[0];
+        left.children[0] = node;
+        node.height = Math.max(height((AVLNode) node.children[0]), height((AVLNode) node.children[1])) + 1;
+        left.height = Math.max(height((AVLNode) left.children[0]), height((AVLNode) left.children[1])) + 1;
         return left;
     }
 
-    private AVLNode rebalance(AVLNode node){
+    private AVLNode balance(AVLNode node){
         if(node == null){
             return node;
         }
-        if((height(node.right) - height(node.left) < -1)){
-            if ((height(node.left.right) - height(node.left.left)) <= 0){
+        if((height((AVLNode) node.children[1]) - height((AVLNode) node.children[0]) > 1)){
+            if ((height((AVLNode) node.children[0].children[1])) <= height((AVLNode) node.children[0].children[0])) {
                 node = rotateRight(node);
-            } else{
-                node.left = rotateLeft(node.left);
+            } else {
+                node.children[0] = rotateLeft((AVLNode) node.children[0]);
                 node = rotateRight(node);
             }
-        } else if ((height(node.right) - height(node.left)) > 1){
-            if((height(node.right.right) - height(node.right.left)) >= 0){
-                node = rotateLeft(node);
-            } else {
-                node.right = rotateRight(node.right);
-                node = rotateLeft(node);
+        } else {
+            if ((height((AVLNode) node.children[1]) - height((AVLNode) node.children[0]) > 1)){
+                if ((height((AVLNode) node.children[1].children[1]) <= height((AVLNode) node.children[1].children[0]))) {
+                    node = rotateLeft(node);
+                } else {
+                    node.children[1] = rotateRight((AVLNode) node.children[1]);
+                    node = rotateLeft(node);
+                }
             }
         }
-        node.height = Math.max(height(node.left), height(node.right)) + 1;
         return node;
     }
 }
+

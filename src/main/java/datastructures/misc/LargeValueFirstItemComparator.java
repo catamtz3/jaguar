@@ -1,4 +1,4 @@
-package cse332.misc;
+package datastructures.misc;
 
 import cse332.datastructures.containers.Item;
 
