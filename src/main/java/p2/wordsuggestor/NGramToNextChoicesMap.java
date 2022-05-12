@@ -13,6 +13,7 @@ import p2.sorts.TopKSort;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
 public class NGramToNextChoicesMap {
@@ -76,25 +77,25 @@ public class NGramToNextChoicesMap {
 
         Comparator<Item<String, Integer>> comp = new LargeValueFirstItemComparator<String, Integer>();
         if (k < 0) {
-            HeapSort.sort(afterNGrams, comp.reversed());
+            HeapSort.sort(afterNGrams, comp);
         } else {
             TopKSort.sort(afterNGrams, k, comp.reversed());
-            afterNGrams = reverseArray(afterNGrams, k);
-        }
+            if (k > afterNGrams.length) {
+                k = afterNGrams.length;
+            }
+            Item<String, Integer>[] passItem = new Item[k];
 
+            for (int i = 0; i < k; i++) {
+                passItem[i] = afterNGrams[k - i - 1];
+            }
+            afterNGrams = passItem;
+        }
         String[] nextWords = new String[k < 0 ? afterNGrams.length : k];
         for (int l = 0; l < afterNGrams.length && l < nextWords.length
                 && afterNGrams[l] != null; l++) {
             nextWords[l] = afterNGrams[l].key;
         }
         return nextWords;
-    }
-    private static Item<String, Integer>[] reverseArray(Item<String, Integer>[] arr, int k) {
-        Item<String, Integer>[] result = (Item<String, Integer>[]) new Item[arr.length];
-        for(int i = 0; i < Math.min(k, arr.length); i++) {
-            result[i] =  arr[Math.min(k, arr.length)-1-i];
-        }
-        return result;
     }
 
     @Override
