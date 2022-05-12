@@ -92,19 +92,22 @@ public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTre
         if((height((AVLNode) node.children[0]) - height((AVLNode) node.children[1]) < -1)){
             if ((height((AVLNode) node.children[0].children[1])) <= height((AVLNode) node.children[0].children[0])) {
                 node = rotateRight(node);
+            } else {
+                node.children[0] = rotateLeft((AVLNode) node.children[0]);
+                node = rotateRight(node);
             }
-            node.children[0] = rotateLeft((AVLNode) node.children[0]);
-            node = rotateRight(node);
         } else {
             if ((height((AVLNode) node.children[0]) - height((AVLNode) node.children[1]) > 1)){
                 if ((height((AVLNode) node.children[1].children[1]) <= height((AVLNode) node.children[1].children[0]))) {
                     node = rotateLeft(node);
+                } else {
+                    node.children[1] = rotateRight((AVLNode) node.children[1]);
+                    node = rotateLeft(node);
                 }
-                node.children[1] = rotateRight((AVLNode) node.children[1]);
-                node = rotateLeft(node);
             }
         }
         node.height = Math.max(height((AVLNode)node.children[0]), height((AVLNode)node.children[1]))+1;
         return node;
     }
 }
+

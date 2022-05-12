@@ -1,4 +1,4 @@
-package cse332.misc;
+package datastructures.misc;
 
 import java.io.*;
 import java.util.ArrayList;

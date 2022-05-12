@@ -2,12 +2,11 @@ package p2.wordsuggestor;
 
 import cse332.interfaces.misc.Dictionary;
 import cse332.interfaces.worklists.LIFOWorkList;
-import cse332.misc.WordReader;
+import datastructures.misc.WordReader;
 import cse332.types.AlphabeticString;
 import cse332.types.NGram;
 import datastructures.worklists.ArrayStack;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
