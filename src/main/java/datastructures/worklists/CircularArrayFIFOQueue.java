@@ -10,7 +10,6 @@ import cse332.interfaces.worklists.FixedSizeFIFOWorkList;
  */
 public class CircularArrayFIFOQueue<E extends Comparable<E>> extends FixedSizeFIFOWorkList<E> {
 
-        private E[] arr;
         private int front;
         private int rear;
         private int size;
@@ -137,8 +136,8 @@ public class CircularArrayFIFOQueue<E extends Comparable<E>> extends FixedSizeFI
             // You will implement this method in project 2. Leave this method unchanged for project 1.
             int prime = 7;
             int result = 1;
-            for (int i = 0; i < this.arr.length; i++){
-                result = result * prime + ((this.arr[i] == null) ? 0 : this.arr[i].hashCode());
+            for (int i = 0; i < this.array.length; i++){
+                result = result * prime + ((this.array[i] == null) ? 0 : this.array[i].hashCode());
             }
             return result;
         }
