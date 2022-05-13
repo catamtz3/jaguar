@@ -14,21 +14,21 @@ public class QuickSort {
     public static <E> void quicksort( E [] array, int start , int end,Comparator<E> comparator) {
         if(start < end) {
             E pivot = array[end];
-            int i = start-1;
+            int beg = start-1;
             for (int j = start; j < end; j ++) {
                 if (comparator.compare(pivot, array[j]) >=0 ) {
-                    i++;
-                    E swaptemp = array[i];
-                    array[i] = array[j];
-                    array[j] = swaptemp;
+                    beg++;
+                    E swap = array[beg];
+                    array[beg] = array[j];
+                    array[j] = swap;
                 }
             }
-            E swapTemp = array[i+1];
-            array[i+1] = array[end];
+            E swapTemp = array[beg+1];
+            array[beg+1] = array[end];
             array[end] = swapTemp;
-            int partitionIndex = i+1;
-            quicksort(array, start,partitionIndex-1,comparator);
-            quicksort(array,partitionIndex+1, end, comparator);
+            int partition = beg+1;
+            quicksort(array, start,partition-1,comparator);
+            quicksort(array,partition+1, end, comparator);
         }
     }
 }
