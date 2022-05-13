@@ -74,6 +74,9 @@ public class NGramToNextChoicesMap {
         Item<String, Integer>[] afterNGrams = getCountsAfter(ngram);
 
         Comparator<Item<String, Integer>> comp = new LargeValueFirstItemComparator<String, Integer>();
+        if(afterNGrams.length == 0){
+            String[] arr = {"null", "null", "null", "null"};
+        }
         if (k < 0) {
             HeapSort.sort(afterNGrams, comp);
         } else {
