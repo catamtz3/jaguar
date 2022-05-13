@@ -1,11 +1,8 @@
 package p2.sorts;
 
-import cse332.exceptions.NotYetImplementedException;
-import cse332.interfaces.worklists.PriorityWorkList;
 import datastructures.worklists.MinFourHeap;
 
 import java.util.Comparator;
-import java.util.PriorityQueue;
 
 
 public class HeapSort {

@@ -1,10 +1,14 @@
 package datastructures.worklists;
 
+import cse332.datastructures.trees.BinarySearchTree;
 import cse332.exceptions.NotYetImplementedException;
 import cse332.interfaces.worklists.PriorityWorkList;
+import cse332.interfaces.worklists.WorkList;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+
 
 /**
  * See cse332/interfaces/worklists/PriorityWorkList.java
