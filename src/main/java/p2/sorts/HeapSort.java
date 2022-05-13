@@ -1,7 +1,12 @@
 package p2.sorts;
 
-import java.util.Comparator;
+import cse332.exceptions.NotYetImplementedException;
+import cse332.interfaces.worklists.PriorityWorkList;
 import datastructures.worklists.MinFourHeap;
+
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 
 public class HeapSort {
     public static <E extends Comparable<E>> void sort(E[] array) {
@@ -13,8 +18,8 @@ public class HeapSort {
         for (int i = 0; i < array.length; i++) {
             heap.add(array[i]);
         }
-        for (int i = 0; i < array.length; i++) {
-            array[i] = heap.next();
+        for (int j = 0; j < array.length; j++) {
+            array[j] = heap.next();
         }
     }
 }

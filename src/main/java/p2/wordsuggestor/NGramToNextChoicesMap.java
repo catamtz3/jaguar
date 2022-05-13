@@ -4,11 +4,9 @@ import cse332.datastructures.containers.Item;
 import cse332.exceptions.NotYetImplementedException;
 import cse332.interfaces.misc.Dictionary;
 import datastructures.misc.LargeValueFirstItemComparator;
-import cse332.sorts.InsertionSort;
 import cse332.types.AlphabeticString;
 import cse332.types.NGram;
 import p2.sorts.HeapSort;
-import p2.sorts.QuickSort;
 import p2.sorts.TopKSort;
 
 import java.util.Comparator;
@@ -80,15 +78,6 @@ public class NGramToNextChoicesMap {
             HeapSort.sort(afterNGrams, comp);
         } else {
             TopKSort.sort(afterNGrams, k, comp.reversed());
-            if (k > afterNGrams.length) {
-                k = afterNGrams.length;
-            }
-            Item<String, Integer>[] passItem = new Item[k];
-
-            for (int i = 0; i < k; i++) {
-                passItem[i] = afterNGrams[k - i - 1];
-            }
-            afterNGrams = passItem;
         }
         String[] nextWords = new String[k < 0 ? afterNGrams.length : k];
         for (int l = 0; l < afterNGrams.length && l < nextWords.length

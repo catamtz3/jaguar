@@ -1,7 +1,11 @@
 package p2.sorts;
 
-import java.util.Comparator;
+import cse332.exceptions.NotYetImplementedException;
+import cse332.interfaces.worklists.PriorityWorkList;
 import datastructures.worklists.MinFourHeap;
+
+import java.util.Comparator;
+
 
 public class TopKSort {
     public static <E extends Comparable<E>> void sort(E[] array, int k) {
@@ -9,26 +13,12 @@ public class TopKSort {
     }
 
     public static <E> void sort(E[] array, int k, Comparator<E> comparator) {
-        MinFourHeap<E> heap = new MinFourHeap<>(comparator);
-        //Never put more tha k values into the array
-        for (int i = 0; i < Math.min(k, array.length); i++) {
-            heap.add(array[i]);
+        if (array.length < k) {
+            HeapSort.sort(array, comparator);
         }
-
-        for (E e : array) {
-            if (comparator.compare(e, heap.peek()) > 0) {
-                heap.add(e);
-                heap.next(); //remove the minvalue
-            }
-        }
-
-        for (int i = 0; i < array.length; i++) {
-            if (i < k) {
-                array[i] = heap.next();
-            } else {
-                //Other value as null
-                array[i] = null;
-            }
+        QuickSort.sort(array, comparator);
+        for (int i = 0; i < k; i++) {
+            array[i] = array[array.length - k + i];
         }
     }
 }
