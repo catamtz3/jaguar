@@ -6,7 +6,6 @@ import cse332.types.BString;
 import datastructures.worklists.ArrayStack;
 
 import java.util.AbstractMap;
-import java.util.Dictionary;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -16,8 +15,7 @@ import java.util.Map.Entry;
  * for method specifications.
  */
 public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> extends TrieMap<A, K, V> {
-    //public class HashTrieNode extends TrieNode<Dictionary<A, HashTrieNode>, HashTrieNode>{
-    public class HashTrieNode extends TrieNode<ChainingHashTable<A, HashTrieNode>, HashTrieNode>{
+    public class HashTrieNode extends TrieNode<ChainingHashTable<A,HashTrieNode>,HashTrieNode> {
         public HashTrieNode() {
             this(null);
         }
