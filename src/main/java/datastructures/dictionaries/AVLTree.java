@@ -28,7 +28,7 @@ import cse332.datastructures.trees.BinarySearchTree;
 
 public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTree<K, V> {
     private class AVLNode extends BSTNode{
-        int height;
+        public int height;
         public AVLNode(K key, V value) {
             super(key, value);
             this.height = 0;
@@ -36,7 +36,7 @@ public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTre
     }
     public AVLTree(){
         super();
-        this.size = size();
+        this.size = 0;
     }
 
     public V insert(K key, V val){
@@ -55,7 +55,7 @@ public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTre
 
     public AVLNode createTree(AVLNode node, AVLNode root){
         if (root == null){
-            root = new AVLNode(node.key, null);
+            return node;
         }
         if(root.key.compareTo(node.key) < 0){
             root.children[1] = createTree(node, (AVLNode)root.children[1]);
@@ -72,20 +72,20 @@ public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTre
     }
 
     public AVLNode rotateRight(AVLNode node){
-        AVLNode left = (AVLNode)node.children[1].children[1];
-        node.children[1].children[1] = left.children[0];
-        left.children[0] = left;
-        node.height = Math.max(height((AVLNode) node.children[0].children[0]), height((AVLNode) node.children[0].children[1])) + 1;
-        left.height = Math.max(height((AVLNode) left.children[1]), height((AVLNode) node)) + 1;
+        AVLNode left = (AVLNode)node.children[1];
+        node.children[1] = left.children[0];
+        left.children[0] = node;
+        node.height = Math.max(height((AVLNode) node.children[0]), height((AVLNode) node.children[1])) + 1;
+        left.height = Math.max(height((AVLNode) left.children[1]), height(node)) + 1;
         return left;
     }
 
     public AVLNode rotateLeft(AVLNode node){
         AVLNode right = (AVLNode)node.children[0];
         node.children[0] = right.children[1];
-        right.children[1] = right;
+        right.children[1] = node;
         node.height = Math.max(height((AVLNode) node.children[0]), height((AVLNode) node.children[1])) + 1;
-        right.height = Math.max(height((AVLNode) right.children[0]), height((AVLNode) right.children[1])) + 1;
+        right.height = Math.max(height((AVLNode) right.children[0]), height(node)) + 1;
         return right;
     }
 
@@ -93,24 +93,24 @@ public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTre
         if(node == null){
             return node;
         }
-        if((height((AVLNode) node.children[1]) - height((AVLNode) node.children[0]) < -1)){
-            if ((height((AVLNode) node.children[0].children[1]) - height((AVLNode) node.children[0].children[0])) <= 0) {
+        if(height((AVLNode)node.children[1]) - height((AVLNode)node.children[0]) > 1){
+            if( height((AVLNode)node.children[1].children[1]) >= height((AVLNode)node.children[1].children[0])){
                 node = rotateRight(node);
             } else {
-                node.children[0] = rotateLeft((AVLNode) node.children[0]);
+                node.children[1] = rotateLeft((AVLNode) node.children[1]);
                 node = rotateRight(node);
             }
         } else {
-            if ((height((AVLNode) node.children[1]) - height((AVLNode) node.children[0]) > 1)){
-                if ((height((AVLNode) node.children[1].children[1]) - height((AVLNode) node.children[1].children[0])) >= 0) {
+            if(height((AVLNode)node.children[0]) - height((AVLNode)node.children[1]) > 1){
+                if( height((AVLNode)node.children[0].children[0]) >= height((AVLNode)node.children[0].children[1])){
                     node = rotateLeft(node);
                 } else {
-                    node.children[1] = rotateRight((AVLNode) node.children[1]);
+                    node.children[0] = rotateRight((AVLNode) node.children[0]);
                     node = rotateLeft(node);
                 }
             }
         }
-//        node.height = Math.max(height((AVLNode) node.children[0]), height((AVLNode) node.children[1])) + 1;
+        node.height = Math.max(height((AVLNode) node.children[0]), height((AVLNode) node.children[1])) + 1;
         return node;
     }
 }
@@ -229,3 +229,4 @@ public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTre
 //        return node;
 //    }
 //}
+
