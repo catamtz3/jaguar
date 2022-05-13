@@ -6,14 +6,12 @@ import datastructures.worklists.MinFourHeap;
 
 import java.util.Comparator;
 
+
 public class TopKSort {
     public static <E extends Comparable<E>> void sort(E[] array, int k) {
         sort(array, k, (x, y) -> x.compareTo(y));
     }
 
-    /**
-     * Behaviour is undefined when k > array.length
-     */
     public static <E> void sort(E[] array, int k, Comparator<E> comparator) {
         if (array.length < k) {
             HeapSort.sort(array, comparator);

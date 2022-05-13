@@ -4,12 +4,14 @@ import cse332.datastructures.containers.Item;
 import cse332.exceptions.NotYetImplementedException;
 import cse332.interfaces.misc.Dictionary;
 import datastructures.misc.LargeValueFirstItemComparator;
-import cse332.sorts.InsertionSort;
 import cse332.types.AlphabeticString;
 import cse332.types.NGram;
+import p2.sorts.HeapSort;
+import p2.sorts.TopKSort;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
 public class NGramToNextChoicesMap {
@@ -73,12 +75,10 @@ public class NGramToNextChoicesMap {
 
         Comparator<Item<String, Integer>> comp = new LargeValueFirstItemComparator<String, Integer>();
         if (k < 0) {
-            InsertionSort.sort(afterNGrams, comp);
+            HeapSort.sort(afterNGrams, comp);
         } else {
-            // You must fix this line toward the end of the project
-            throw new NotYetImplementedException();
+            TopKSort.sort(afterNGrams, k, comp.reversed());
         }
-
         String[] nextWords = new String[k < 0 ? afterNGrams.length : k];
         for (int l = 0; l < afterNGrams.length && l < nextWords.length
                 && afterNGrams[l] != null; l++) {

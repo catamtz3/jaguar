@@ -7,13 +7,14 @@ import datastructures.worklists.MinFourHeap;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+
 public class HeapSort {
     public static <E extends Comparable<E>> void sort(E[] array) {
         sort(array, (x, y) -> x.compareTo(y));
     }
 
     public static <E> void sort(E[] array, Comparator<E> comparator) {
-        PriorityWorkList<E> heap = new MinFourHeap<E>(comparator);
+        MinFourHeap<E> heap = new MinFourHeap<>(comparator);
         for (int i = 0; i < array.length; i++) {
             heap.add(array[i]);
         }

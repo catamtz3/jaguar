@@ -10,46 +10,65 @@ import java.util.NoSuchElementException;
  * for method specifications.
  */
 public class ListFIFOQueue<E> extends FIFOWorkList<E> {
-
-    public ListFIFOQueue() {
-        throw new NotYetImplementedException();
+    private static class Node<E>{
+        E data;
+        Node<E> next;
+        public Node (E data){
+            this.data = data;
+            this.next = null;
+        }
     }
+
+    private Node<E> front;
+    private Node<E> rear;
+    private int size;
+    public ListFIFOQueue(){
+        size = 0;
+    }
+
 
     @Override
     public void add(E work) {
-        throw new NotYetImplementedException();
+        Node<E> temp = new Node<E>(work);
+        size++;
+        if (this.front == null){
+            this.front = this.rear = temp;
+        }
+        this.rear.next = temp;
+        this.rear = temp;
     }
 
     @Override
     public E peek() {
-        throw new NotYetImplementedException();
+        if(front == null) {
+            throw new NoSuchElementException();
+        }
+        return front.data;
     }
 
     @Override
     public E next() {
-        throw new NotYetImplementedException();
+        if (this.front == null){
+            throw new NoSuchElementException();
+        }
+        Node<E> temp = this.front;
+        this.front = this.front.next;
+        if(this.front == null){
+            this.rear = null;
+        }
+        size--;
+        return temp.data;
     }
 
     @Override
     public int size() {
-        throw new NotYetImplementedException();
+        return size;
     }
 
     @Override
     public void clear() {
-        throw new NotYetImplementedException();
+        front = null;
+        rear = null;
+        size = 0;
     }
-
-    private class ListNode {
-
-        public E data;
-        public ListNode next;
-
-        public ListNode(E data) {
-            this.data = data;
-            next = null;
-        }
-
-    }
-
 }
