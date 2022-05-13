@@ -12,10 +12,7 @@ public class TopKSort {
             HeapSort.sort(array, comparator);
             return;
         }
-
         QuickSort.sort(array,comparator);
-
-
         for (int i = 0; i < k; i++) {
             array[i] = array[array.length-k+i];
         }
