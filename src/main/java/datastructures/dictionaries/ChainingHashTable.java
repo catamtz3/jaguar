@@ -1,13 +1,11 @@
 package datastructures.dictionaries;
 
-import com.sun.net.httpserver.Filter;
 import cse332.datastructures.containers.Item;
 import cse332.exceptions.NotYetImplementedException;
 import cse332.interfaces.misc.DeletelessDictionary;
 import cse332.interfaces.misc.Dictionary;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
 /**
@@ -15,148 +13,118 @@ import java.util.function.Supplier;
  */
 public class ChainingHashTable<K, V> extends DeletelessDictionary<K, V> {
     private final Supplier<Dictionary<K, V>> newChain;
-    private Dictionary<K, V>[] array;
-    private int startCount;
-    private double loadFactor;
-    private int totalCount;
-    private double counting;
-    private final int[] sizes = {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,3907,3911,3917,3919,3923,3929,3931,3943,3947,3967 };
+    private Dictionary<K,V>[] arr;
+    private int primeIndex;
+
+    // not pretty sure which primes should be reasonable as table size.
+    private final int[] primes = {367, 769, 1549, 3089, 6229, 12451, 24923, 49991, 99907, 199967, 223087};
+
 
     public ChainingHashTable(Supplier<Dictionary<K, V>> newChain) {
         this.newChain = newChain;
-        array = new Dictionary[7];
-        for (int i = 0; i < 7; i++){
-            array[i] = newChain.get();
-        }
-        startCount = 0;
-        totalCount = 0;
-        counting = 0.0;
-
-
-    }
-
-    public int size(){
-        System.out.println("returning" + totalCount);
-        return totalCount;
+        arr = buildArr(157);
     }
 
     @Override
     public V insert(K key, V value) {
-        if(loadFactor >= 1) {
-            this.array = resize(array);
+        if (key == null || value == null) {
+            throw new IllegalArgumentException();
         }
-        int index = Math.abs(key.hashCode() % array.length);
-        if(index >= 0) {
-            if(array[index] == null) {
-                array[index] = newChain.get();
-            }
-            V returnValue = null;
-            if(this.find(key) == null) {
-                totalCount++;
-            } else {
-                returnValue = this.find(key);
-            }
-            array[index].insert(key, value);
-            loadFactor = (++counting) / array.length;
-            return returnValue;
+
+        V oldValue = find(key);
+        if (oldValue == null) {
+            this.size++;
+        }
+
+        int index = Math.abs(key.hashCode()% arr.length);
+        if (arr[index] == null) {
+            arr[index] = newChain.get();
+            //arr[index].insert(key, value);
+        }
+        arr[index].insert(key, value);
+
+
+        if (((double) this.size / arr.length)>=1) {
+            // rehash!!!!
+            rehash();
+        }
+        return oldValue;
+
+    }
+
+    private void rehash() {
+        Dictionary<K,V>[] temp;
+        //changed this value
+        if (primeIndex >= primes.length) {
+            temp = buildArr(arr.length * 2 + 1);
         } else {
-            return null;
+            temp = buildArr(primes[primeIndex]);
+            primeIndex++;
         }
+        for (Dictionary<K,V> bucket : arr) {
+            if (bucket != null) {
+                for (Item<K, V> pair : bucket) {
+                    int i = Math.abs(pair.key.hashCode() % temp.length);
+                    if (temp[i] == null) {
+                        temp[i] = newChain.get();
+                    }
+                    temp[i].insert(pair.key, pair.value);
+                }
+            }
+        }
+        arr = temp;
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private Dictionary<K,V>[] buildArr(int size) {
+        return (Dictionary<K,V>[])new Dictionary[size];
     }
 
     @Override
     public V find(K key) {
-        int index = Math.abs(key.hashCode() % array.length);
-        if(index >= 0) {
-            if(array[index] == null) {
-                array[index] = newChain.get();
-                return null;
-            }
-            return array[index].find(key);
-        } else {
+        if (key == null) {
+            throw new IllegalArgumentException();
+        }
+        int index = Math.abs(key.hashCode()% arr.length);
+        if (arr[index] == null) {
             return null;
         }
+        return arr[index].find(key);
     }
 
     @Override
     public Iterator<Item<K, V>> iterator() {
-        if (array[0] == null) {
-            array[0] = newChain.get();
-        }
-        Iterator<Item<K, V>> iter = new Iterator<Item<K, V>>() {
-            private int iterStart = 0;
-            Iterator<Item<K, V>> iterZero = array[0].iterator();
-
-            @Override
-            public boolean hasNext() {
-                if (iterStart < array.length && !iterZero.hasNext()) {
-                    if (array[iterStart + 1] == null) {
-                        iterStart++;
-
-                        while (array[iterStart] == null) {
-                            iterStart++;
-                            if (iterStart >= array.length) {
-                                return false;
-                            }
-                        }
-                    } else {
-                        iterStart++;
-                    }
-                    if (iterStart < array.length) {
-                        iterZero = array[iterStart].iterator();
-                    }
-                }
-                if (iterStart >= array.length) {
-                    return false;
-                } else {
-                    return iterZero.hasNext();
-                }
-            }
-
-            @Override
-            public Item<K, V> next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
-                }
-                return iterZero.next();
-            }
-        };
-        return iter;
+        return new CHTIterator();
     }
+    @SuppressWarnings("unchecked")
+    private class CHTIterator implements Iterator<Item<K, V>> {
+        private final Iterator<Item<K, V>>[] iterators;
+        private int bucketIndex;
+        private int count;
 
-    private Dictionary<K, V>[] resize(Dictionary<K, V> changeArray[]) {
-        Dictionary<K, V>[] changedDict;
-        if (startCount > 15) {
-            changedDict = new Dictionary[changeArray.length * 2];
-        } else {
-            changedDict = new Dictionary[sizes[startCount]];
-        }
-        for (int i = 0; i < changeArray.length; i++) {
-            if (changeArray[i] != null) {
-                for (Item<K, V> item : changeArray[i]) {
-                    int index = Math.abs(item.key.hashCode() % changedDict.length);
-                    if (index >= 0) {
-                        if (changedDict[index] == null) {
-                            changedDict[index] = newChain.get();
-                        }
-                        changedDict[index].insert(item.key, item.value);
-                    } else {
-                        return new Dictionary[0];
-                    }
+        public CHTIterator() {
+            iterators = (Iterator<Item<K, V>>[]) new Iterator[arr.length];
+            bucketIndex = 0;
+            count = 0;
+            for (int i = 0; i < arr.length; i++) {
+                if (arr[i] != null) {
+                    iterators[i] = arr[i].iterator();
                 }
             }
         }
-        startCount++;
-        return changedDict;
-    }
 
+        public boolean hasNext() {
+            return (count < size);
+        }
 
-    /**
-     * Temporary fix so that you can debug on IntelliJ properly despite a broken iterator
-     * Remove to see proper String representation (inherited from Dictionary)
-     */
-    @Override
-    public String toString() {
-        return "ChainingHashTable String representation goes here.";
+        public Item<K, V> next() {
+            while (bucketIndex < arr.length - 1 && (iterators[bucketIndex] == null || !iterators[bucketIndex].hasNext())) {
+                bucketIndex++;
+            }
+
+            count++;
+            return iterators[bucketIndex].next();
+        }
     }
 }

@@ -13,12 +13,26 @@ public class TopKSort {
     }
 
     public static <E> void sort(E[] array, int k, Comparator<E> comparator) {
-        if (array.length < k) {
-            HeapSort.sort(array, comparator);
+        MinFourHeap<E> heap = new MinFourHeap<>(comparator);
+        //Never put more tha k values into the array
+        for (int i = 0; i < Math.min(k, array.length); i++) {
+            heap.add(array[i]);
         }
-        QuickSort.sort(array, comparator);
-        for (int i = 0; i < k; i++) {
-            array[i] = array[array.length - k + i];
+
+        for (E e : array) {
+            if (comparator.compare(e, heap.peek()) > 0) {
+                heap.add(e);
+                heap.next(); //remove the minvalue
+            }
+        }
+
+        for (int i = 0; i < array.length; i++) {
+            if (i < k) {
+                array[i] = heap.next();
+            } else {
+                //Other value as null
+                array[i] = null;
+            }
         }
     }
 }

@@ -1,11 +1,9 @@
 package datastructures.dictionaries;
 
 import cse332.datastructures.containers.Item;
-import cse332.exceptions.NotYetImplementedException;
 import cse332.interfaces.misc.DeletelessDictionary;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
  * 1. The list is typically not sorted.
