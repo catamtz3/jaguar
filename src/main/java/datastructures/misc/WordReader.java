@@ -1,15 +1,19 @@
+/*
 package datastructures.misc;
 
 import java.io.*;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+*/
 /**
  * WordReader reads words from a file one-by-one, converting to lower case and
  * eliminating punctuation.
- */
+ *//*
+
 public class WordReader implements Iterator<String>, Closeable {
     private final Reader reader;
     private final StreamTokenizer tok;
@@ -71,7 +75,7 @@ public class WordReader implements Iterator<String>, Closeable {
                 return true;
             }
 
-            List<String> strings = new ArrayList<String>();
+            List<String> strings = new ArrayList<>();
             StringBuilder s = new StringBuilder();
             StringBuilder quotesBuff = new StringBuilder();
 
@@ -132,3 +136,4 @@ public class WordReader implements Iterator<String>, Closeable {
         this.reader.close();
     }
 }
+*/
