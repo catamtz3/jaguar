@@ -1,9 +1,7 @@
 package datastructures.worklists;
 
-import cse332.exceptions.NotYetImplementedException;
 import cse332.interfaces.worklists.PriorityWorkList;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
@@ -34,7 +32,11 @@ public class MinFourHeap<E> extends PriorityWorkList<E> {
     public void add(E work) {
         if (currentSize == defaultSize) {
             defaultSize = defaultSize * 2;
-            data = Arrays.copyOf(data, defaultSize);
+            E[] temp = (E[]) new Object[defaultSize];
+            for(int i = 0; i < data.length; i++){
+                temp[i] = data[i];
+            }
+            data = temp;
         }
         currentSize++;
         data[currentSize - 1] = work;
